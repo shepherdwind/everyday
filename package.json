@@ -1,0 +1,23 @@
+{
+  "name": "everyday",
+  "version": "0.0.0",
+  "description": "everyday code",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/shepherdwind/everyday.git"
+  },
+  "author": "hanwne.sah",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shepherdwind/everyday/issues"
+  },
+  "homepage": "https://github.com/shepherdwind/everyday",
+  "dependencies": {
+    "nunjucks": "^1.0.5",
+    "progress": "^1.1.5"
+  }
+}
