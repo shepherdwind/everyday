@@ -1,10 +1,8 @@
+
 'use strict';
 var nunjucks = require('/Users/eward/test/nunjucks/');
 var Environment = nunjucks.Environment;
 var env = new Environment(new nunjucks.FileSystemLoader('views'));
-
-var fs = require('fs');
-var path = require('path');
 
 function mytagExtension() {
   this.tags = ['inc'];
@@ -17,26 +15,15 @@ function mytagExtension() {
     return new nodes.CallExtension(this, 'run', args, null);
   };
 
-  this.run = function(context, filename, ctx) {
-    console.log(context);
-    var view = path.join(__dirname, './views/', filename);
-    var viewStr = fs.readFileSync(view).toString();
-    var ret = nunjucks.compile(viewStr, env, view, true);
-
-    return ret.render(ctx);
+  this.run = function(context, name) {
+    return 'hello world';
   };
 }
 
 
 env.addExtension('inc', new mytagExtension());
 
-env.addFilter('shorten', function(str, count) {
-    return str.slice(0, count || 5);
-});
-
-var res = env.render('index.html', {
-  title: 'Hello, world',
-  name: 'haha',
+var res = env.render('inc.html', {
   items: {
     aaa: 'bbb',
     ddd: 'eee'

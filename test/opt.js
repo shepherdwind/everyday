@@ -10,25 +10,13 @@
 
 var assert = require('assert')
 var opt = require('../otp/one-time-pad')
-var pad = opt.pad
-var getChars = opt.getChars
 
-describe('OTP', function() {
+var text = "hello world"
+var password = "this is password"
+console.log(new Buffer(text).toString('base64'))
+var ret = opt.encrypt(text, password)
+console.log(ret)
 
-  describe('basic', function() {
-    it('pad work', function() {
-      assert.strictEqual('0111', pad(111, 4))
-      assert.strictEqual('0001', pad(1, 4))
-      assert.strictEqual('1111', pad(1111, 4))
-      assert.strictEqual('0031', pad(31, 4))
-    })
-
-    it('getChars', function() {
-      var ascii = getChars(255)
-      assert.equal(255, ascii.length)
-      assert.equal('\u0065', ascii[0x65])
-      assert.equal('\u0015', ascii[0x15])
-    })
-  })
-  
-})
+var decode = opt.encrypt(ret, password, true)
+console.log(decode)
+//console.log(new Buffer(decode, "base64").toString())

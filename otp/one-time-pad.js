@@ -3,7 +3,8 @@
  * http://en.wikipedia.org/wiki/One-time_pad
  */
 
-var charset = '';
+var charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='
+var charsets = charset.split('')
 
 /**
  * 获得某一段数字之间的所有符号
@@ -11,38 +12,49 @@ var charset = '';
 function getChars(len, start){
   start = +start || 0
   len = start + len
-  var chars = []
+  var chars = new Buffer(len)
   for (var i = start; i < len; i++) {
-    chars.push(String.fromCharCode(i))
+    chars[i] = fromCharCode(i)
   }
   return chars
 }
 
 /**
- * 补全长度
- * xx => 00xx
  */
-function pad(input, len) {
-  input = '' + input
-  if (input.length < len) {
-    return pad('0' + input, len)
-  } else {
-    return input
-  }
+function pad(text, password) {
+  var index1 = charset.indexOf(text)
+  var index2 = charset.indexOf(password)
+  var len = charset.length
+  console.log([index1, index2])
+  console.log([text, password, charset[(index1 + index2) % len]])
+  return charset[(index1 + index2) % len]
 }
 
-function encrypt(text, password){
-  var buf = new Buffer(text);
-  var bufp = new Buffer(password);
-  var ret = new Buffer(buf.length);
-  for (var i=0; i < buf.length; i++) {
-    console.log(buf[i].toString(2))
-    console.log(bufp[i].toString(2))
-    ret[i] = buf[i] ^ bufp[i];
-    console.log(ret[i].toString(2))
-  }
-  return ret;
+/**
+ * 密码长度和text保持一致
+ */
+function equalLen(text, password) {
+  var times = Math.ceil(text.length / password.length)
+  return Array(times + 1).join(password)
 }
 
-exports.pad = pad;
-exports.getChars = getChars;
+function encrypt(text, password, isBase64){
+  if (!isBase64) {
+    text = new Buffer(text).toString('base64')
+  }
+
+  password = new Buffer(password).toString('base64')
+  password = equalLen(text, password)
+
+  var len = text.length
+  var i = 0
+  var ret = ''
+  while(i !== len) {
+    ret += pad(text[i], password[i])
+    i ++
+  }
+
+  return ret
+}
+
+exports.encrypt = encrypt
