@@ -37,7 +37,7 @@ function progress(filename) {
 function read(filename, dest, fn){
   // 开始处理时间;
   var t = Date.now();
-  var reader = fs.createReadStream(filename, dest);
+  var reader = fs.createReadStream(filename);
   var writer = fs.createWriteStream(dest);
   var bar = progress(filename);
 
