@@ -4,7 +4,13 @@ function* a(){
   console.log(d);
   var f = yield c();
   console.log(f);
+  return 'hello';
 }
+
+var dd = a();
+dd.next().value(function(err, ret){
+  dd.next(ret);
+});
 
 function b(time){
   return function(done){
@@ -20,14 +26,14 @@ function* c(){
   return 'hello';
 }
 
-var gen = a();
+//var gen = a();
 
-gen.next().value(function(err, ret){
-  var next = gen.next(ret).value; // ret value eql to d
+//gen.next().value(function(err, ret){
+  //var next = gen.next(ret).value; // ret value eql to d
 
-  // c is generator, use next to run
-  next.next().value(function(err, ret){
-    var a = next.next(ret);
-    gen.next(a.value);
-  });
-});
+  //// c is generator, use next to run
+  //next.next().value(function(err, ret){
+    //var a = next.next(ret);
+    //gen.next(a.value);
+  //});
+//});

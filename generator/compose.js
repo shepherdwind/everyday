@@ -1,3 +1,4 @@
+'use strict'
 var co = require('co');
 
 function compose(middleware){
@@ -28,9 +29,7 @@ function* b(next) {
   console.log(3)
 }
 
-co(compose([a, b]))();
-
-// 不用co的实现
+//co(compose([a, b]))();
 
 function* composeEasy(middleware){
   var next = noop();
@@ -51,5 +50,5 @@ function* composeEasy(middleware){
   yield next;
 }
 
-//co(composeEasy([a, b]))();
+co(composeEasy([a, b]))();
 
