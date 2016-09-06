@@ -31,9 +31,14 @@ void test_show_bytes(int val) {
   show_pointer(pval);
 }
 
-int main() {
-  test_show_bytes(12345);
-  const char *s = "abcdef";
-  show_bytes((byte_pointer) s, strlen(s));
-  return 0;
-}
+/*
+ *int main() {
+ *  int val = 0x87654321;
+ *  byte_pointer valp = (byte_pointer)&val;
+ *  // byte_pointer valp = (byte_pointer)0x87654321;
+ *  show_bytes(valp, 1);
+ *  show_bytes(valp, 2);
+ *  show_bytes(valp, 3);
+ *  return 0;
+ *}
+ */
