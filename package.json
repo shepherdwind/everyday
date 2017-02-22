@@ -23,7 +23,7 @@
     "co": "^3.1.0"
   },
   "devDependencies": {
-    "mocha": "~2.2.1",
+    "mocha": "^3.2.0",
     "should": "~5.2.0"
   }
 }
