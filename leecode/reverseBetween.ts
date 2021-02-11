@@ -1,3 +1,4 @@
+import * as assert from 'assert';
 class ListNode {
   val: number;
   next: ListNode | null;
@@ -12,45 +13,50 @@ function reverseBetween(
   m: number,
   n: number
 ): ListNode | null {
-  if (m >= n) {
-    return head;
+  if (m === 1) {
+    return reverseFront(head, n);
   }
-
-  let current = 1;
-  let item = head;
-  let reverseNode: ListNode;
-  let last: ListNode;
-  do {
-    if (current === m) {
-      reverseNode = item;
-      item = item.next;
-      current += 1;
-      last = new ListNode(reverseNode.val);
-      reverseNode.next = last;
-      continue;
-    }
-
-    if (current > m && current < n) {
-      const next = reverseNode.next;
-      reverseNode.next = new ListNode(item.val, next);
-    }
-
-    if (current === n) {
-      reverseNode.val = item.val;
-      last.next = item.next;
-      break;
-    }
-    // 下一个节点
-    current += 1;
-    item = item.next;
-  } while (item);
-
+  head.next = reverseBetween(head, m - 1, n - 1);
   return head;
 }
 
-const head = createList(3, 5);
-reverseBetween(head, 1, 2);
-reverse(head);
+function reverseFront(head: ListNode, m: number) {
+  if (!head.next || m === 1) {
+    return head;
+  }
+
+  const last = reverseFront(head.next, m - 1);
+  const next = head.next.next;
+  head.next.next = head;
+  head.next = next;
+  return last;
+}
+
+function reverseFrontWithM(head: ListNode, m: number): { node: ListNode, isEnd: boolean } {
+  if (!head.next || m === 1) {
+    return { node: head, isEnd: m === 1};
+  }
+
+  const { node: last, isEnd } = reverseFrontWithM(head.next, m - 1);
+  const next = head.next.next;
+  head.next.next = head;
+  head.next = next;
+  return { node: last, isEnd };
+}
+function reverseKGroup(head: ListNode, n: number) {
+  if (!head || !head.next) {
+    return head;
+  }
+  const { node: part, isEnd } = reverseFrontWithM(head, n);
+  if (!isEnd) {
+    // 重新翻转回来
+    return reverseFrontWithM(part, n).node;
+  }
+
+  const next = reverseKGroup(head.next, n);
+  head.next = next;
+  return part;
+}
 
 function createList(...list: number[]) {
   let head: ListNode;
@@ -67,9 +73,35 @@ function createList(...list: number[]) {
   return head;
 }
 
-function reverse(list: ListNode | null) {
+function walk(list: ListNode | null, fn: (item: ListNode) => any, ret: any[] = []) {
   if (list) {
-    console.log(list.val);
-    reverse(list.next);
+    const item = fn(list);
+    ret.push(item);
+    const others = walk(list.next, fn);
+    ret = ret.concat(others);
   }
+  return ret;
 }
+
+(() => {
+  const head = createList(1, 2, 3, 4, 5, 6);
+  const ret = reverseBetween(head, 1, 2);
+  const end = walk(ret, item => item.val);
+  assert.deepStrictEqual(end, [2, 1, 3, 4, 5, 6]);
+  console.log(end);
+
+  const ret1 = reverseBetween(createList(1, 2), 1, 1);
+  const end1 = walk(ret1, item => item.val);
+  assert.deepStrictEqual(end1, [1, 2]);
+
+  const ret2 = reverseBetween(createList(1, 2), 1, 2);
+  const end2 = walk(ret2, item => item.val);
+  assert.deepStrictEqual(end2, [2, 1]);
+});
+
+(() => {
+  const head = createList(1, 2, 3, 4, 5, 6);
+  const ret = reverseKGroup(head, 4);
+  const end = walk(ret, item => item.val);
+  console.log(end);
+})();
