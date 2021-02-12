@@ -83,6 +83,22 @@ function walk(list: ListNode | null, fn: (item: ListNode) => any, ret: any[] = [
   return ret;
 }
 
+function isPalindrome(head: ListNode | null): boolean {
+  let left = head;
+  const visit = (right: ListNode) => {
+    if (!right) {
+      return true;
+    }
+    const ret = visit(right.next);
+    if (left.val !== right.val || !ret) {
+      return false;
+    }
+    left = left.next;
+    return true;
+  };
+  return visit(head);
+};
+
 (() => {
   const head = createList(1, 2, 3, 4, 5, 6);
   const ret = reverseBetween(head, 1, 2);
@@ -104,4 +120,11 @@ function walk(list: ListNode | null, fn: (item: ListNode) => any, ret: any[] = [
   const ret = reverseKGroup(head, 4);
   const end = walk(ret, item => item.val);
   console.log(end);
+});
+
+(() => {
+  const head = createList(1, 2, 3, 4, 5, 6);
+  assert.strictEqual(isPalindrome(head), false);
+  const head1 = createList(1, 2, 3, 3, 2, 1);
+  assert(isPalindrome(head1));
 })();
