@@ -196,16 +196,53 @@ function helpConvert(root: TreeNode | null) {
 }
 
 function isValidBST(root: TreeNode | null): boolean {
-  if (!root) {
-    return true;
-  }
-  const { left, right } = root;
-  const leftOk = isValidBST(left);
-  const rightOk = isValidBST(right);
+  const info = helpValid(root);
+  return info.isValid;
+}
 
-  let isOk = left !== null ? left.val < root.val : true;
-  isOk = isOk && (right !== null ? right.val > root.val : true);
-  return leftOk && rightOk && isOk;
+function helpValid(root: TreeNode): { isValid: boolean; max?: TreeNode; min?: TreeNode } {
+  if (!root) {
+    return { isValid: true };
+  }
+
+  const left = helpValid(root.left);
+  const right = helpValid(root.right);
+
+  // 有一个失败了，那么整体就不符合条件了
+  if (!left.isValid || !right.isValid) {
+    // 有一个不符合条件，直接退出
+    return { isValid: false };
+  }
+
+  // 左边的最大值，必须小于 root 节点
+  if (left.max && left.max.val >= root.val) {
+    return { isValid: false };
+  }
+  // 右边的最小值，必须大于 root 节点
+  if (right.min && right.min.val <= root.val) {
+    return { isValid: false };
+  }
+  return {
+    isValid: true,
+    max: right.max || root.right || root,
+    min: left.min || root.left || root,
+  };
+}
+
+function searchBST(root: TreeNode | null, val: number): TreeNode | null {
+  let item = root;
+  while (item) {
+    if (item.val === val) {
+      return item;
+    }
+
+    if (item.val > val) {
+      item = item.left;
+    } else {
+      item = item.right;
+    }
+  }
+  return null;
 }
 
 (() => {
@@ -246,6 +283,6 @@ function isValidBST(root: TreeNode | null): boolean {
   console.log(ret);
 });
 (() => {
-  const ret = isValidBST(createTree([5, 4, [6, 3, 7]]));
+  const ret = isValidBST(createTree([1, 1, null]));
   console.log(ret);
 })();
