@@ -159,7 +159,53 @@ function helpUid(root: TreeNode | null, ret: TreeNode[]) {
 }
 
 function kthSmallest(root: TreeNode | null, k: number): number {
-  return 
+  return help(root, k)[k - 1];
+}
+
+function help(root: TreeNode | null, k: number, ret: number[] = []) {
+  if (!root) {
+    return null;
+  }
+
+  help(root.left, k, ret);
+  ret.push(root.val);
+
+  if (ret.length >= k) {
+    return ret;
+  }
+
+  help(root.right, k, ret);
+  return ret;
+}
+
+let total = 0;
+function convertBST(root: TreeNode | null): TreeNode | null {
+  total = 0;
+  helpConvert(root);
+  return root;
+}
+
+function helpConvert(root: TreeNode | null) {
+  if (!root) {
+    return;
+  }
+  helpConvert(root.right);
+  root.val += total;
+  total = root.val;
+  helpConvert(root.left);
+}
+
+function isValidBST(root: TreeNode | null): boolean {
+  if (!root) {
+    return true;
+  }
+  const { left, right } = root;
+  const leftOk = isValidBST(left);
+  const rightOk = isValidBST(right);
+
+  let isOk = left !== null ? left.val < root.val : true;
+  isOk = isOk && (right !== null ? right.val > root.val : true);
+  return leftOk && rightOk && isOk;
 }
 
 (() => {
@@ -188,4 +234,18 @@ function kthSmallest(root: TreeNode | null, k: number): number {
   // console.log(ret);
   const ret1 = findDuplicateSubtrees(createTree([0, [0, 0, null], [0, null, [0, null, 0]]]));
   console.log(ret1);
+});
+
+(() => {
+  const ret = kthSmallest(createTree([5, [3, [2, 1, null], 4], 6]), 2);
+  console.log(ret);
+});
+
+(() => {
+  const ret = convertBST(createTree([4,[1, 0, [2, null, 3]], [6, 5, [7, null, 8]]]));
+  console.log(ret);
+});
+(() => {
+  const ret = isValidBST(createTree([5, 4, [6, 3, 7]]));
+  console.log(ret);
 })();
