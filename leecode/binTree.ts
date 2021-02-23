@@ -257,6 +257,44 @@ function insertIntoBST(root: TreeNode | null, val: number): TreeNode | null {
   return root;
 }
 
+
+function deleteNode(root: TreeNode | null, key: number): TreeNode | null {
+  if (!root) {
+    return null;
+  }
+
+  if (root.val !== key) {
+    if (root.val < key) {
+      root.right = deleteNode(root.right, key);
+    } else {
+      root.left = deleteNode(root.left, key);
+    }
+    return root;
+  }
+
+  return mergeNode(root.left, root.right);
+}
+
+function mergeNode(left: TreeNode | null, right: TreeNode) {
+  if (!right) {
+    return left;
+  }
+  let node = right;
+  let p: TreeNode = null;
+  while (node.left) {
+    p = node;
+    node = node.left;
+  }
+
+  node.left = left;
+  if (p) {
+    p.left = node.right;
+    node.right = right;
+  }
+
+  return node;
+}
+
 (() => {
   // const ret = connect(createTree([1, [2, 4, 5], [3, 6, 7]]));
   // console.log(ret.toJSON());
@@ -296,5 +334,9 @@ function insertIntoBST(root: TreeNode | null, val: number): TreeNode | null {
 });
 (() => {
   const ret = isValidBST(createTree([1, 1, null]));
+  console.log(ret);
+});
+(() => {
+  const ret = deleteNode(createTree([5, [3, 2, 4], [7, 6, 8]]), 7);
   console.log(ret);
 })();
