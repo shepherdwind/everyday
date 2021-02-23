@@ -295,6 +295,61 @@ function mergeNode(left: TreeNode | null, right: TreeNode) {
   return node;
 }
 
+function serialize(root: TreeNode | null): string {
+  if (!root) {
+    return null;
+  }
+  const ret = [];
+  const nodeList = [root];
+  while (nodeList.length !== 0) {
+    const len = nodeList.length;
+    for (let i = 0; i < len; i++) {
+      const item = nodeList.shift();
+      if (!item) {
+        ret.push('null');
+      } else {
+        ret.push(item.val);
+        nodeList.push(item.left)
+        nodeList.push(item.right)
+      }
+    }
+  }
+  // 删除尾部 null
+  while (ret[ret.length - 1] === 'null') {
+    ret.pop();
+  }
+  return ret.join(',');
+}
+
+function deserialize(data: string): TreeNode | null {
+  const items = data.split(',').map(o => o === 'null' ? null : parseFloat(o));
+  if (!items.length) {
+    return null;
+  }
+
+  const root = new TreeNode(items.shift());
+  const stack = [root];
+
+  while (items.length) {
+    let len = stack.length;
+    for (let i = 0; i < len; i++) {
+      const node = stack.shift();
+      const left = items.shift();
+      const right = items.shift();
+      if (left !== null && left !== undefined) {
+        node.left = new TreeNode(left);
+        stack.push(node.left);
+      }
+
+      if (right !== null && right !== undefined) {
+        node.right = new TreeNode(right);
+        stack.push(node.right);
+      }
+    }
+  }
+  return root;
+}
+
 (() => {
   // const ret = connect(createTree([1, [2, 4, 5], [3, 6, 7]]));
   // console.log(ret.toJSON());
@@ -339,4 +394,11 @@ function mergeNode(left: TreeNode | null, right: TreeNode) {
 (() => {
   const ret = deleteNode(createTree([5, [3, 2, 4], [7, 6, 8]]), 7);
   console.log(ret);
+});
+(() => {
+  const ret = serialize(createTree([1, 2, [3, [4, 6, 7], 5]]));
+  const ret1 = serialize(createTree([1, null, [2, 3, null]]));
+  const ret2 = serialize(createTree([5, [4, [3, -1, null], null], [7, [2, 9, null], null]]));
+  console.log([ret, ret1, ret2]);
+  console.log(serialize(deserialize(ret)));
 })();
