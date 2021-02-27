@@ -350,6 +350,38 @@ function deserialize(data: string): TreeNode | null {
   return root;
 }
 
+function lowestCommonAncestor(root: TreeNode | null, p: TreeNode | null, q: TreeNode | null): TreeNode | null {
+  const ret = helpAncestor(root, p, q);
+  if (typeof ret !== 'string' && ret) {
+    return ret;
+  }
+  return null;
+}
+
+function helpAncestor(root: TreeNode, p: TreeNode, q: TreeNode): TreeNode | 'p' | 'q' {
+  if (!root) {
+    return null;
+  }
+
+  const left = helpAncestor(root.left, p, q);
+  if (left && typeof left !== 'string') {
+    return left;
+  }
+  const right = helpAncestor(root.right, p, q);
+  if (right && typeof right !== 'string') {
+    return right;
+  }
+  if (left === 'p' && right === 'q') {
+    return root;
+  }
+  const status = root.val === p.val ? 'p' : (root.val === q.val ? 'q' : null);
+  const end = [left, right, status].filter(o => o).join('');
+  if (end === 'pq' || end === 'qp') {
+    return root;
+  }
+  return (end as 'p' | 'q') || null;
+}
+
 (() => {
   // const ret = connect(createTree([1, [2, 4, 5], [3, 6, 7]]));
   // console.log(ret.toJSON());
@@ -401,4 +433,10 @@ function deserialize(data: string): TreeNode | null {
   const ret2 = serialize(createTree([5, [4, [3, -1, null], null], [7, [2, 9, null], null]]));
   console.log([ret, ret1, ret2]);
   console.log(serialize(deserialize(ret)));
+});
+
+(() => {
+  const ret = deserialize('3,5,1,6,2,0,8,null,null,7,4')
+  const end = lowestCommonAncestor(ret, new TreeNode(5), new TreeNode(4));
+  console.log(end);
 })();
