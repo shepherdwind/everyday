@@ -1,15 +1,20 @@
 {
   "compilerOptions": {
-    "target": "es2017",
-    "module": "commonjs",
     "moduleResolution": "node",
+    "target": "es5",
+    "lib": [
+      "es2015",
+      "es2016",
+      "es2017",
+      "dom"
+    ],
     "sourceMap": true,
-    "emitDecoratorMetadata": true,
+    "declaration": true,
+    "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
-    "removeComments": false,
-    "noImplicitAny": false
+    "emitDecoratorMetadata": true
   },
-  "exclude": [
-    "node_modules"
+  "include": [
+    "leecode"
   ]
 }

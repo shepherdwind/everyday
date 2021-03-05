@@ -1,4 +1,4 @@
-interface LinkedList {
+export interface LinkedList {
   value: number;
   key: number;
   next?: LinkedList;
