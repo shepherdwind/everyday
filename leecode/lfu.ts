@@ -71,9 +71,10 @@ class LFUCache {
     // 第二步骤，移动到下一个频率节点
     item.rate = rate + 1;
     const rateItem = this.rateMap[rate + 1];
+    item.next = null;
+    item.prev = null;
+
     if (!rateItem) {
-      item.next = null;
-      item.prev = null;
       this.rateMap[rate + 1] = {
         head: item,
         tail: item,
@@ -82,9 +83,8 @@ class LFUCache {
       // 放在队尾
       const { tail } = rateItem;
       rateItem.tail = item;
-      item.next = null;
       tail.next = item;
-      item.prev = tail.next;
+      item.prev = tail;
     }
   }
 
@@ -136,7 +136,7 @@ class LFUCache {
     const { head } = item;
     const next = head.next;
     // 删除元素
-    delete this.store[item.head.key];
+    delete this.store[head.key];
     this.size -= 1;
     // 没有 next ，只有一个元素，直接清空节点
     if (!next) {
@@ -161,6 +161,11 @@ function runIt(list: Array<[number] | [number, number]>, lfu: LFUCache) {
     }
   }
 }
+
+(() => {
+  const lfu = new LFUCache(2);
+  runIt([[1, 1], [2, 2], [1], [3, 3], [2], [3], [4, 4], [1], [3], [4]], lfu);
+});
 
 (() => {
   const lfu = new LFUCache(10);
