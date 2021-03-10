@@ -15,6 +15,7 @@
     "emitDecoratorMetadata": true
   },
   "include": [
-    "leecode"
+    "leecode",
+    "cs"
   ]
 }
