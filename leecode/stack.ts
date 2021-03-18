@@ -1,7 +1,7 @@
 import assert from "assert";
 function nextGreaterElement(nums1: number[], nums2: number[]): number[] {
   const map = getNextGreaterMap(nums2);
-  return nums1.map(item => map[item]);
+  return nums1.map((item) => map[item]);
 }
 function getNextGreaterMap(list: number[]) {
   const data: { [key: number]: number } = {};
@@ -22,7 +22,7 @@ function nextGreaterElements(nums: number[]): number[] {
   const len = nums.length;
   const result: number[] = Array(len).fill(-1);
   for (let i = nums.length * 2 - 1; i > -1; i--) {
-    const item = nums[i %len];
+    const item = nums[i % len];
     while (temp.length && item >= temp[temp.length - 1]) {
       temp.pop();
     }
@@ -33,13 +33,13 @@ function nextGreaterElements(nums: number[]): number[] {
   }
 
   return result;
-};
+}
 
 function dailyTemperatures(T: number[]): number[] {
   const len = T.length;
   const result = Array(len).fill(0);
   let temp: number[] = [];
-  for (let i = len - 1; i >=0; i--) {
+  for (let i = len - 1; i >= 0; i--) {
     while (temp.length > 0 && T[i] >= T[temp[temp.length - 1]]) {
       temp.pop();
     }
@@ -47,7 +47,61 @@ function dailyTemperatures(T: number[]): number[] {
     temp.push(i);
   }
   return result;
-};
+}
+class MaxQueue {
+  private queue: [number, number][] = [];
+  private max = 0;
+  private size = 0;
+
+  constructor(max: number) {
+    this.max = max;
+  }
+
+  push(num: number) {
+    this.size += 1;
+    // 从后往前，以此删除比自己小的元素
+    for (let i = this.queue.length - 1; i > -1; i--) {
+      if (this.queue[i][0] <= num) {
+        this.queue.pop();
+      }
+    }
+
+    // 第一个元素越界了，直接推出
+    if (this.queue.length > 0 && this.queue[0][1] <= this.size - this.max) {
+      this.queue.shift();
+    }
+
+    this.queue.push([num, this.size]);
+  }
+
+  getMaxValue() {
+    return this.queue[0][0];
+  }
+}
+
+function maxSlidingWindow(nums: number[], k: number): number[] {
+  const queue = new MaxQueue(k);
+  const result: number[] = [];
+  for (let j = 0; j < k - 1; j++) {
+    queue.push(nums[j]);
+  }
+  for (let i = 0; i < nums.length; i++) {
+    if (i + k - 1 < nums.length) {
+      queue.push(nums[i + k - 1]);
+      result.push(queue.getMaxValue());
+    }
+  }
+  return result;
+}
+
+assert.deepStrictEqual(maxSlidingWindow([1, 3, -1, -3, 5, 3, 6, 7], 3), [
+  3,
+  3,
+  5,
+  5,
+  6,
+  7,
+]);
 
 assert.deepStrictEqual(nextGreaterElement([4, 1, 2], [1, 3, 4, 2]), [
   -1,
@@ -55,9 +109,28 @@ assert.deepStrictEqual(nextGreaterElement([4, 1, 2], [1, 3, 4, 2]), [
   -1,
 ]);
 
-assert.deepStrictEqual(nextGreaterElements([1,2,1]), [2, -1, 2]);
-assert.deepStrictEqual(nextGreaterElements([1,2,7,5,4,1]), [2, 7, -1, 7, 7, 2]);
+assert.deepStrictEqual(nextGreaterElements([1, 2, 1]), [2, -1, 2]);
+assert.deepStrictEqual(nextGreaterElements([1, 2, 7, 5, 4, 1]), [
+  2,
+  7,
+  -1,
+  7,
+  7,
+  2,
+]);
 
-assert.deepStrictEqual(dailyTemperatures([73, 74, 75, 71, 69, 72, 76, 73]), [1, 1, 4, 2, 1, 1, 0, 0])
-assert.deepStrictEqual(dailyTemperatures([89,62,70,58,47,47,46,76,100,70]), [8,1,5,4,3,2,1,1,0,0])
-console.log('run ok')
+assert.deepStrictEqual(dailyTemperatures([73, 74, 75, 71, 69, 72, 76, 73]), [
+  1,
+  1,
+  4,
+  2,
+  1,
+  1,
+  0,
+  0,
+]);
+assert.deepStrictEqual(
+  dailyTemperatures([89, 62, 70, 58, 47, 47, 46, 76, 100, 70]),
+  [8, 1, 5, 4, 3, 2, 1, 1, 0, 0]
+);
+console.log("run ok");
