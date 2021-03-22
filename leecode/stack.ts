@@ -94,6 +94,85 @@ function maxSlidingWindow(nums: number[], k: number): number[] {
   return result;
 }
 
+interface StackItem {
+  value: number;
+  next?: StackItem;
+}
+
+class Stack {
+  private head: StackItem = null;
+  private size: number = 0;
+
+  isEmpty() {
+    return this.size === 0;
+  }
+
+  peek() {
+    return this.head?.value;
+  }
+
+  push(value: number) {
+    const head: StackItem = { value };
+    head.next = this.head;
+    this.head = head;
+    this.size += 1;
+  }
+
+  pop() {
+    if (this.isEmpty()) {
+      return null;
+    }
+    const head = this.head;
+    this.head = head ? head.next : null;
+    head.next = null;
+    this.size -= 1;
+    return head.value;
+  }
+}
+
+class MyQueue {
+  private head: Stack;
+  private tail: Stack;
+  constructor() {
+    this.head = new Stack();
+    this.tail = new Stack();
+  }
+
+  push(x: number): void {
+    this.head.push(x);
+  }
+
+  pop(): number {
+    if (this.empty()) {
+      return null;
+    }
+
+    this.isNeedMove();
+    return this.tail.pop();
+  }
+
+  peek(): number {
+    if (this.empty()) {
+      return null;
+    }
+    this.isNeedMove();
+    return this.tail.peek();
+  }
+
+  empty(): boolean {
+    return this.head.isEmpty() && this.tail.isEmpty();
+  }
+
+  private isNeedMove() {
+    if (!this.tail.isEmpty()) {
+      return;
+    }
+    while (!this.head.isEmpty()) {
+      this.tail.push(this.head.pop());
+    }
+  }
+}
+
 assert.deepStrictEqual(maxSlidingWindow([1, 3, -1, -3, 5, 3, 6, 7], 3), [
   3,
   3,
@@ -133,4 +212,19 @@ assert.deepStrictEqual(
   dailyTemperatures([89, 62, 70, 58, 47, 47, 46, 76, 100, 70]),
   [8, 1, 5, 4, 3, 2, 1, 1, 0, 0]
 );
+(() => {
+  const queue = new MyQueue();
+  queue.push(1);
+  queue.push(2);
+  queue.push(3);
+  console.log(queue.peek());
+  console.log(queue.pop());
+  queue.push(4);
+  console.log(queue.pop());
+  console.log(queue.pop());
+  console.log(queue.empty());
+  console.log(queue.pop());
+  console.log(queue.pop());
+  console.log(queue.empty());
+})();
 console.log("run ok");
