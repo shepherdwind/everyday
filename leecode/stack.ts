@@ -173,6 +173,102 @@ class MyQueue {
   }
 }
 
+interface QueueType {
+  value: number;
+  next?: QueueType;
+}
+class QueueMock {
+  private head: QueueType = null;
+  private tail: QueueType = null;
+  size = 0;
+  push(value: number) {
+    const item: QueueType = { value };
+    if (!this.tail) {
+      this.tail = item;
+      this.head = item;
+    } else {
+      this.tail.next = item;
+      this.tail = item;
+    }
+    this.size += 1;
+  }
+
+  empty() {
+    return this.size === 0;
+  }
+
+  peak() {
+    return this.head && this.head.value;
+  }
+  pop() {
+    if (!this.head) {
+      return null;
+    }
+    const head = this.head;
+    this.head = head.next;
+    this.size -= 1;
+    head.next = null;
+    if (!this.head) {
+      this.tail = null;
+    }
+    return head.value;
+  }
+}
+
+class MyStack {
+  private q1: QueueMock;
+  private q2: QueueMock;
+  private last: number;
+  constructor() {
+    this.q1 = new QueueMock();
+    this.q2 = new QueueMock();
+  }
+
+  push(x: number): void {
+    if (!this.q1.empty()) {
+      this.q1.push(x);
+    } else {
+      this.q2.push(x);
+    }
+    this.last = x;
+  }
+
+  pop(): number {
+    if (this.empty()) {
+      return null;
+    }
+
+    if (!this.q1.empty()) {
+      return this.moveAndPop(this.q1, this.q2);
+    } else {
+      return this.moveAndPop(this.q2, this.q1);
+    }
+  }
+
+  top(): number {
+    return this.last;
+  }
+
+  empty(): boolean {
+    return this.q2.empty() && this.q1.empty();
+  }
+
+  private moveAndPop(q1: QueueMock, q2: QueueMock) {
+    if (q1.size === 1) {
+      this.last = null;
+      return q1.pop();
+    }
+
+    while(q1.size > 2) {
+      q2.push(q1.pop());
+    }
+    this.last = q1.pop();
+    q2.push(this.last);
+    return q1.pop();
+  }
+}
+
+
 assert.deepStrictEqual(maxSlidingWindow([1, 3, -1, -3, 5, 3, 6, 7], 3), [
   3,
   3,
@@ -226,5 +322,16 @@ assert.deepStrictEqual(
   console.log(queue.pop());
   console.log(queue.pop());
   console.log(queue.empty());
+});
+(() => {
+  const stack = new MyStack();
+  stack.push(1);
+  stack.push(2);
+  stack.push(3);
+  console.log(stack.top());
+  console.log(stack.pop());
+  console.log(stack.pop());
+  console.log(stack.pop());
+  console.log(stack.empty());
 })();
 console.log("run ok");
