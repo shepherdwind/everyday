@@ -96,9 +96,7 @@ function mergeTweets(tweets: Array<{ order: number; tweetId: number}>[]) {
   return result;
 }
 
-
-
-function run(cmd: string[], data: number[][]) {
+function runIt(cmd: string[], data: number[][]) {
   const twitter = new Twitter();
   cmd.shift();
   data.shift();
@@ -122,5 +120,5 @@ function run(cmd: string[], data: number[][]) {
   // console.log(twitter.getNewsFeed(1));
   const c = ["Twitter","postTweet","follow","follow","getNewsFeed","postTweet","getNewsFeed","getNewsFeed","unfollow","getNewsFeed","getNewsFeed","unfollow","getNewsFeed","getNewsFeed"];
   const b = [[],[1,5],[1,2],[2,1],[2],[2,6],[1],[2],[2,1],[1],[2],[1,2],[1],[2]];
-  run(c, b);
+  runIt(c, b);
 })();
