@@ -65,12 +65,13 @@ class MaxItem {
     // 删除元素
     this.store = this.store.filter((o) => o !== prev && o !== next);
     this.store.push({
-      data: prev.data.concat(next.data),
+      data: prev.data.concat(item, next.data),
       start: prev.start,
       end: prev.end,
     });
     this.sortStore();
     delete this.map[item];
+    return null;
   }
 
   private sortStore() {
