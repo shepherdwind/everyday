@@ -1,7 +1,7 @@
-// https://leetcode-cn.com/problems/course-schedule/
+// course-schedule
 import assert from 'assert';
 
-function canFinish(numCourses: number, prerequisites: number[][]): boolean {
+function canFinishV1(numCourses: number, prerequisites: number[][]): boolean {
   const linkMap = new Map<number, number[]>();
   const isConnected = (a: number, b: number) => {
     const cur = linkMap.get(a);
@@ -13,9 +13,7 @@ function canFinish(numCourses: number, prerequisites: number[][]): boolean {
       return false;
     }
 
-    return cur.some(item => {
-      return item === b || isConnected(item, b);
-    });
+    return cur.some(item => isConnected(item, b));
   };
 
   for (const item of prerequisites) {
@@ -31,10 +29,33 @@ function canFinish(numCourses: number, prerequisites: number[][]): boolean {
   return true;
 }
 
+function canFinish(numCourses: number, prerequisites: number[][]): boolean {
+  const dep: number[][] = new Array(numCourses);
+  const table: number[] = new Array(numCourses).fill(0);
+  for (const item of prerequisites) {
+    if (!dep[item[0]]) {
+      dep[item[0]] = [];
+    }
+
+    dep[item[0]].push(item[1]);
+    table[item[1]] += 1;
+  }
+  for (const i of table) {
+    if (!table[i]) {
+      
+    }
+  }
+  return false;
+}
+
 (() => {
-  const ret = canFinish(2, [[0, 1], [1, 2], [3, 4], [4, 1]]);
+  const ret = canFinishV1(2, [[0, 1], [1, 2], [3, 4], [4, 1]]);
   assert(ret);
-  assert.deepStrictEqual(canFinish(2, [[0, 1], [1, 2], [3, 4], [4, 0], [2, 4]]), false);
+  assert.deepStrictEqual(canFinishV1(2, [[0, 1], [1, 2], [3, 4], [4, 0], [2, 4]]), false);
   const d1 = [[0,10],[3,18],[5,5],[6,11],[11,14],[13,1],[15,1],[17,4]];
-  assert.deepStrictEqual(canFinish(20, d1), false);
+  assert.deepStrictEqual(canFinishV1(20, d1), false);
+});
+(() => {
+  const ret = canFinish(5, [[0, 1], [1, 2], [3, 4], [4, 1]]);
+  console.log(ret);
 })();
