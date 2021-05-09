@@ -33,19 +33,40 @@ function canFinish(numCourses: number, prerequisites: number[][]): boolean {
   const dep: number[][] = new Array(numCourses);
   const table: number[] = new Array(numCourses).fill(0);
   for (const item of prerequisites) {
-    if (!dep[item[0]]) {
-      dep[item[0]] = [];
+    if (!dep[item[1]]) {
+      dep[item[1]] = [];
     }
 
-    dep[item[0]].push(item[1]);
-    table[item[1]] += 1;
+    dep[item[1]].push(item[0]);
+    table[item[0]] += 1;
   }
-  for (const i of table) {
-    if (!table[i]) {
-      
+
+  let task: number[] = [];
+  let total = 0;
+
+  do {
+    table.forEach((o, idx) => {
+      if (o === 0) {
+        task.push(idx);
+        table[idx] = -1;
+        total += 1;
+      }
+    });
+
+    if (!task.length) {
+      return false;
     }
-  }
-  return false;
+
+    while (task.length) {
+      const item = task.pop();
+      const depItem = dep[item] || [];
+      for (const i of depItem) {
+        table[i] -= 1;
+      }
+    }
+  } while (total !== numCourses)
+
+  return true;
 }
 
 (() => {
@@ -57,5 +78,8 @@ function canFinish(numCourses: number, prerequisites: number[][]): boolean {
 });
 (() => {
   const ret = canFinish(5, [[0, 1], [1, 2], [3, 4], [4, 1]]);
-  console.log(ret);
+  assert(ret);
+  assert.deepStrictEqual(canFinish(2, [[0, 1], [1, 2], [3, 4], [4, 0], [2, 4]]), false);
+  const d1 = [[0,10],[3,18],[5,5],[6,11],[11,14],[13,1],[15,1],[17,4]];
+  assert.deepStrictEqual(canFinish(20, d1), false);
 })();
