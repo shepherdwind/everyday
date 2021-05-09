@@ -44,29 +44,25 @@ function canFinish(numCourses: number, prerequisites: number[][]): boolean {
   let task: number[] = [];
   let total = 0;
 
-  do {
-    table.forEach((o, idx) => {
-      if (o === 0) {
-        task.push(idx);
-        table[idx] = -1;
-        total += 1;
-      }
-    });
-
-    if (!task.length) {
-      return false;
+  table.forEach((o, idx) => {
+    if (o === 0) {
+      task.push(idx);
     }
+  });
 
-    while (task.length) {
-      const item = task.pop();
-      const depItem = dep[item] || [];
-      for (const i of depItem) {
-        table[i] -= 1;
+  while (task.length) {
+    const item = task.pop();
+    total += 1;
+    const depItem = dep[item] || [];
+    for (const i of depItem) {
+      table[i] -= 1;
+      if (table[i] === 0) {
+        task.push(i);
       }
     }
-  } while (total !== numCourses)
+  }
 
-  return true;
+  return total === numCourses;
 }
 
 (() => {
