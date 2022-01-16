@@ -59,5 +59,5 @@ function findMinCoin(dp: number[], coins: number[], amount: number) {
   return res === Number.MAX_VALUE ? -1 : res;
 }
 
-console.log(coinChange([2, 5], 3));
-console.log(coinChange2([2, 5], 3));
+// console.log(coinChange([2, 5], 3));
+// console.log(coinChange2([2, 5], 3));
