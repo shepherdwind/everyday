@@ -4,3 +4,6 @@ node_modules
 *.csv
 *.xlsx
 ./kf/2000W
+
+/*/target/
+/*/Cargo.lock
