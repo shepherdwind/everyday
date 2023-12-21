@@ -15,7 +15,7 @@ const HEIGHT: u32 = ROWS * SIZE + 4 * MARGIN;
 fn main() {
     nannou::app(model)
         .update(update)
-        .loop_mode(LoopMode::rate_fps(60.0))
+        .loop_mode(LoopMode::rate_fps(1.0))
         .run()
 }
 

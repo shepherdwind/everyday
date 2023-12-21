@@ -1,5 +1,6 @@
 [workspace]
 members=[
-    "life-game"
+    "life-game",
+    "leetcode"
 ]
 resolver="2"
