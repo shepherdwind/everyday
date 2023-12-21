@@ -18,7 +18,7 @@
   "homepage": "https://github.com/shepherdwind/everyday",
   "dependencies": {
     "co": "^3.1.0",
-    "nunjucks": "^3.2.3",
+    "nunjucks": "^3.2.4",
     "progress": "^1.1.8",
     "shelljs": "^0.3.0",
     "ts-node": "^9.1.1",
